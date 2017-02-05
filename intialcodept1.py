@@ -48,14 +48,14 @@ def getChord(lowNote):
     return chordList[buttonPress]
 
 #function to play notes
-def play(v, n, s, chord, outport = outport, tstart = tstart):
+def play(v, n, chord, outport = outport, tstart = tstart):
     
     #if velocity > 0 then calculate the time until the string gets plucked
     strT = (float(0.1)/float((4*v))) - float(getTime())
 
     #if the string should be plucked the pluck the string
     if strT <= 0:
-        msg = mido.Message('note_on', note = chord[n], channel = s, velocity = 1)
+        msg = mido.Message('note_on', note = chord[n], channel = n, velocity = 1)
         outport.send(msg)
         played = True
     else:
@@ -70,18 +70,15 @@ def reset(outport = outport):
         
 #main bit of code
 n = 0
-s = 0
 lowNote = getLowNote()
 chord = getChord(lowNote)
 
 while True:
     if v > 0 and n < 4:
-        played = play(v, n, s, chord)
+        played = play(v, n, chord)
         if played == True:
             tstart = default_timer()
             n += 1
-            s += 1
     elif v < 0:
         tstart = default_timer()
         n = 0
-        s = 0
